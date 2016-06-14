@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <style media="screen">
+            .container {
+            padding-top:100px;
+            }
+        </style>
+        <style type="text/css" media="screen">
+            #editor {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        </style>
+        <link rel="stylesheet" type="text/css" href="sweetalert/sweetalert.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="sweetalert/sweetalert.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#test" role="tab" aria-controls="test">Test Action</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#create" role="tab" aria-controls="create">Create New Action</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="test" role="tabpanel">
+                    </br></br>
+                    <form id="test">
+                        <fieldset class="form-group">
+                            <label for="exampleSelect1">Select Region</label>
+                            <select class="form-control" id="regions">
+                            </select>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="exampleSelect1">Select Action</label>
+                            <select class="form-control" id="actions">
+                            </select>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="exampleTextarea">Request Params</label>
+                            <textarea class="form-control" id="request_params" rows="10">{
+
+}</textarea>
+                        </fieldset>
+                        <!-- <fieldset class="form-group">
+                            <label for="exampleInputFile">Select Params File</label>
+                            <input type="file" class="form-control-file" id="exampleInputFile">
+                            <small class="text-muted">This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.</small>
+                        </fieldset> -->
+                    </form>
+                    <div>
+                        <button type="submit" id="test_submit" class="btn btn-primary">Submit</button>
+                        </br></br></br></br>
+                        <div>
+                            <label for="exampleTextarea">Result</label>
+                            <textarea class="form-control" id="result" rows="10"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="create" role="tabpanel">
+                    </br></br>
+                    <form id="test">
+                        <fieldset class="form-group">
+                            <label for="exampleInputEmail1">Function Name</label>
+                            <input type="email" class="form-control" id="function_name" placeholder="Enter Function Name">
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="exampleTextarea">Function Body</label>
+                            <pre class=" ace_editor ace-tm" style="height: 400px;">
+                                <div id="editor">'use strict';
+
+module.exports = (ec2, params) => {
+    return new Promise((resolve, reject) => {
+
+    });
+};
+                                </div>
+                            </pre>
+                        </fieldset>
+                    </form>
+                    <div>
+                        <button type="submit" id="create_submit" class="btn btn-primary">Submit</button>
+                        </br></br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script>
+            $(function () {
+              $('#myTab a:first').tab('show')
+            })
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/monokai");
+            editor.getSession().setMode("ace/mode/javascript");
+            document.getElementById('editor').style.fontSize='14px';
+        </script>
+        <script src="js/init_page.js"></script>
+    </body>
+</html>
