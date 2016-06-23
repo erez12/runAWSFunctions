@@ -6,10 +6,10 @@ let removeFileExtension = (x) => x.slice(0, -3);
 
 function updateSupportedActions(){
     supportedActions = {};
-    
+
     return new Promise(function(resolve, reject) {
         fs.readdir(__dirname + '/../functions', (e, files) => {
-            let action = files.map(removeFileExtension);
+            let action = files.map(removeFileExtension).filter(action => action !== "base_code");
             action.forEach((a) => {
                 supportedActions[a] = require("../functions/" + a);
             });
