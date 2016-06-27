@@ -1,7 +1,9 @@
 'use strict';
+
 /*
 params:
-    PublicIps: [String]
+    a: String
+    b: [Int]
 */
 module.exports = (ec2, params) => {
     return new Promise((resolve, reject) => {

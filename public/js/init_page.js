@@ -9,6 +9,8 @@ function createEditor(name){
    return editor;
 }
 
+let getNewUrl = functionName => location.origin + "?lastAction=" + functionName;
+
 let EditPopupOpenObserver = $.Callbacks();
 EditPopupOpenObserver.topics = {
    POPUP_OPEN: "open",
@@ -21,12 +23,13 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
 
 // Update Test Action - regions, actions
 ;(function (){
-    const appendOptions = (listOfOptions, $elem) => listOfOptions.forEach( option => $("<option>" + option + "</option>").appendTo($elem) );
-
+    const appendOptions = (listOfOptions, $elem) => listOfOptions.forEach( option => $("<option value=" + option + ">" + option + "</option>").appendTo($elem) );
+    const setActiveAction = () => $("#actions").val(window.location.search.split('=')[1]);
     $.when($.getJSON('regions'), $.getJSON('actions'))
         .then((regions, actions) => {
             appendOptions(regions[0], $('#regions'));
             appendOptions(actions[0], $('#actions'));
+            setActiveAction()
         });
 }());
 
@@ -72,18 +75,6 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
 ;(function (){
    let isPopupOpen = false;
 
-   function saveCodeHandler(){
-      let oldFunctionName = $("#actions option:selected")[0].value;
-      let newFunctionName = oldFunctionName;
-      let functionBody = createEditor("action-editor").getSession().getValue();
-
-      return $.post('edit', {
-         oldFunctionName: oldFunctionName,
-         newFunctionName: newFunctionName,
-         newFunctionBody: functionBody
-      });
-   }
-
    EditPopupOpenObserver.add((topic) => {
       if (topic == EditPopupOpenObserver.topics.POPUP_OPEN) {
          isPopupOpen = true;
@@ -93,17 +84,25 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
 
    $(window).bind('keydown', function(event) {
       let isTestTab = $("#test").hasClass('active');
-      if (!isTestTab || isPopupOpen || !(event.ctrlKey || event.metaKey)){
+      // TODO - add support for edit tab
+      if (!isTestTab || isPopupOpen || !(event.ctrlKey || event.metaKey) || String.fromCharCode(event.which).toLowerCase() !== 's'){
          return;
       }
-      switch (String.fromCharCode(event.which).toLowerCase()) {
-         case 's':
-            event.preventDefault();
-            saveCodeHandler().done(() => {
-               setTimeout( () => { window.location.reload(); }, 1000);
-            })
-            break;
-       }
+
+      event.preventDefault();
+      let oldFunctionName = $("#actions option:selected")[0].value;
+      let newFunctionName = oldFunctionName;
+      let functionBody = createEditor("action-editor").getSession().getValue();
+
+      $.post('edit', {
+         oldFunctionName: oldFunctionName,
+         newFunctionName: newFunctionName,
+         newFunctionBody: functionBody
+      }).done(() => {
+         setTimeout( () => {
+            var a = getNewUrl(newFunctionName);
+            window.location = getNewUrl(newFunctionName); }, 1000);
+      });
    });
 }());
 
@@ -137,7 +136,7 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
              newFunctionBody: functionBody
           }).done(function(data) {
              swal("Updated!", "Your action has been updated.", "success");
-             setTimeout(function (){$('#myModal').modal('hide'); window.location.reload()}, 1000 * 2);
+             setTimeout( () => { window.location = getNewUrl(newFunctionName); }, 1000);
           });
        });
        // TODO - need to catch cancel event to set popup close
@@ -152,7 +151,7 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
 
         let selectedRegion = $("#regions").val();
         let selectedAction = $("#actions").val();
-        let requestParams = JSON.parse($("#request_params").val() || "{}");
+        let requestParams = JSON.parse(createEditor("params-editor").getSession().getValue() || "{}");
 
         // TODO - add get file content of input from text area
 
@@ -161,7 +160,8 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
             action: selectedAction,
             params: requestParams
         }).done(function(data) {
-            $("#result").empty().text(JSON.stringify(data, null, '\t'));
+            createEditor("result-editor").getSession().setValue(JSON.stringify(data, null, '\t'));
+            $('#resultModal').modal('show')
         });
     });
 }());
@@ -198,7 +198,7 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
                 functionBody: functionBody
             }).done(function(data) {
                 swal("Created!", "Your new action has been added.", "success");
-                setTimeout(function (){window.location.reload()}, 1000 * 3);
+                setTimeout( () => { window.location = getNewUrl(functionName); }, 1000);
             });
             setTimeout(function(){
 
