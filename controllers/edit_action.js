@@ -10,6 +10,12 @@ module.exports = (req, res) => {
       fs.unlink(__dirname + "/../functions/" + oldFunctionName + ".js", (err) => {  });
    }
    fs.writeFile(__dirname + "/../functions/" + newFunctionName + ".js", newFunctionBody, function(err) {
+      try {
+          delete require.cache[require.resolve("../functions/" + newFunctionName)];
+      } catch(e){
+         console.log(e);
+      }
+
       res.json(err || "action updated");
    });
 };

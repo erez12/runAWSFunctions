@@ -30,6 +30,7 @@ function runAction(req, res){
     let params = req.body.params;
 
     let ec2 = createEc2Instance(region);
+    consoe.log("running action", req.body.action);
     actions().then((supportedActions) => {
         let action = supportedActions[req.body.action];
         if (!action){
@@ -37,6 +38,7 @@ function runAction(req, res){
             return;
         }
 
+        consoe.log("running action", req.body.action);
         action(ec2, params)
             .then((result) => {
                 res.json({"result": result})
