@@ -1,5 +1,9 @@
 'use strict';
 
+/*
+params:
+   ownerId: String
+*/
 module.exports = (ec2, params) => {
     params = params || {}
     return new Promise((resolve, reject) => {

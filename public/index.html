@@ -51,8 +51,14 @@
                             </select>
                         </fieldset>
                         <fieldset class="form-group">
+                            <label for="exampleTextarea">Action code</label>
+                            <pre id="action-editor" class=" ace_editor ace-tm" style="height: 400px;">
+                            </pre>
+                        </fieldset>
+
+                        <fieldset class="form-group">
                             <label for="exampleTextarea">Request Params</label>
-                            <pre id="params-editor" class=" ace_editor ace-tm" id="editor_params" style="height: 400px;">
+                            <pre id="params-editor" class=" ace_editor ace-tm" style="height: 400px;">
                             </pre>
                         </fieldset>
                         <!-- <fieldset class="form-group">
@@ -61,13 +67,14 @@
                             <small class="text-muted">This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.</small>
                         </fieldset> -->
                     </form>
-                    <div>
-                       <p>
-                           <button type="submit" id="test_submit" class="btn btn-primary">Run</button>
-                           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Edit</button>
-                        </p>
+                    <p>
+                        <button type="submit" id="test_submit" class="btn btn-primary">Run</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Edit Code</button>
+                     </p>
 
-                        <!-- Modal -->
+                     <!-- Modal -->
+                    <div>
+
                         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                           <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -94,12 +101,6 @@
                               </div>
                             </div>
                           </div>
-                        </div>
-
-                        </br></br></br></br>
-                        <div>
-                            <label for="exampleTextarea">Result</label>
-                            <textarea class="form-control" id="result" rows="10"></textarea>
                         </div>
                     </div>
                 </div>
@@ -141,6 +142,7 @@
             // editor.getSession().setMode("ace/mode/javascript");
             // document.getElementById('editor').style.fontSize='14px';
         </script>
+        <script src="js/yaml.js"></script>
         <script src="js/requests.js"></script>
         <script src="js/init_page.js"></script>
     </body>
