@@ -1,26 +1,25 @@
 "use strict"
 
 const fs = require('fs');
-let supportedActions = {};
 let removeFileExtension = (x) => x.slice(0, -3);
+let normelizeModuleName = n => "../functions/" + n;
+function unloadModule(name){
+   var path = require.resolve(normelizeModuleName(name));
 
-function updateSupportedActions(){
-    supportedActions = {};
+   if (require.cache.hasOwnProperty(path) && require.cache[path].children) {
+       require.cache[path].children.forEach(function (child) {
+           unloadModule(child.id);
+       });
+   }
 
-    return new Promise(function(resolve, reject) {
-        fs.readdir(__dirname + '/../functions', (e, files) => {
-            let action = files.map(removeFileExtension).filter(action => action !== "base_code");
-            action.forEach((a) => {
-                supportedActions[a] = require("../functions/" + a);
-            });
-            resolve();
-        });
-    });
+   delete require.cache[path];
 }
+module.exports.getSupportedActions = () => new Promise((resolve, reject) => {
+   fs.readdir(__dirname + '/../functions', (e, files) => {
+       resolve( files.map(removeFileExtension).filter(action => action !== "base_code") );
+   });
+});
 
-module.exports = () => {
-    return updateSupportedActions().then(() => {
-        // Don't care about promise value want to use actual
-        return supportedActions;
-    });
-}
+// EREZ - support feture use of actions db
+module.exports.getAction = (name) => new Promise((resolve, reject) => { resolve(require(normelizeModuleName(name))); });
+module.exports.updateAction = (name) => new Promise((resolve, reject) => { resolve(unloadModule(name)); });

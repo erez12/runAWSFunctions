@@ -1,6 +1,8 @@
 "use strict";
 
 const fs = require('fs');
+const actions = require('./actions');
+
 module.exports = (req, res) => {
    let oldFunctionName = req.body.oldFunctionName;
    let newFunctionName = req.body.newFunctionName;
@@ -10,12 +12,7 @@ module.exports = (req, res) => {
       fs.unlink(__dirname + "/../functions/" + oldFunctionName + ".js", (err) => {  });
    }
    fs.writeFile(__dirname + "/../functions/" + newFunctionName + ".js", newFunctionBody, function(err) {
-      try {
-          delete require.cache[require.resolve("../functions/" + newFunctionName)];
-      } catch(e){
-         console.log(e);
-      }
-
+      actions.updateAction(newFunctionName);
       res.json(err || "action updated");
    });
 };

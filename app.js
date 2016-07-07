@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({
 app.use('/functions', express.static('functions'));
 app.use(express.static('public'));
 
-app.get('/actions', (req, res) => actions().then((a) => res.send(Object.keys(a))));
+app.get('/actions', (req, res) => actions.getSupportedActions().then((a) => res.send(a)));
 app.get('/regions', regions.supportedRegions);
 
 app.post('/run', runAction);

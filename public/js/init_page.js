@@ -18,6 +18,21 @@ EditPopupOpenObserver.topics = {
 }
 let getFunctionCode = (functionName) => request.get("functions/" + functionName + ".js");
 
+function popupAlert(msg){
+   $.alert(msg, {
+      autoClose: true,
+      closeTime: 2000,
+      // danger, success, warning or info
+      type: 'success',
+      // position+offeset
+      // top-left,top-right,bottom-left,bottom-right,center
+      position: ['center', [-0.42, 0]],
+      speed: 'normal',
+      isOnly: false,
+      // Minimal space in PX from top
+      minTop: 10
+   });
+}
 // =================
 // First Tab
 
@@ -98,11 +113,7 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
          oldFunctionName: oldFunctionName,
          newFunctionName: newFunctionName,
          newFunctionBody: functionBody
-      }).done(() => {
-         setTimeout( () => {
-            var a = getNewUrl(newFunctionName);
-            window.location = getNewUrl(newFunctionName); }, 1000);
-      });
+      }).done(() => { popupAlert('  Saved...  ') });
    });
 }());
 
@@ -160,7 +171,7 @@ let getFunctionCode = (functionName) => request.get("functions/" + functionName 
             action: selectedAction,
             params: requestParams
         }).done(function(data) {
-            createEditor("result-editor").getSession().setValue(JSON.stringify(data, null, '\t'));
+            createEditor("result-editor").getSession().setValue(typeof data.result == "string" ? data.result : JSON.stringify(data.result, null, '\t'));
             $('#resultModal').modal('show')
         });
     });

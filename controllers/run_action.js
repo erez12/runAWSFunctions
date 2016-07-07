@@ -30,20 +30,20 @@ function runAction(req, res){
     let params = req.body.params;
 
     let ec2 = createEc2Instance(region);
-    consoe.log("running action", req.body.action);
-    actions().then((supportedActions) => {
-        let action = supportedActions[req.body.action];
-        if (!action){
-            res.json({"error": "no such method"});
-            return;
-        }
+    let requestAction = req.body.action;
 
-        consoe.log("running action", req.body.action);
-        action(ec2, params)
+    actions.getSupportedActions().then((supportedActions) => {
+      if (supportedActions.indexOf(requestAction) < 0 ){
+         res.json({"error": "no such method"});
+         return;
+      }
+      actions.getAction(requestAction).then((action) => {
+         action(ec2, params)
             .then((result) => {
                 res.json({"result": result})
             })
             .catch(e => res.json({"error": e}));
+      });
     });
 }
 
